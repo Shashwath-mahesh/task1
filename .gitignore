@@ -11,7 +11,8 @@ out/
 .springBeans
 .sts4-cache
 bin/
-
+.idea/
+*.iml
 
 ### NetBeans ###
 /nbproject/private/
