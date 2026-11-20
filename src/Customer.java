@@ -1,34 +1,29 @@
 /** A delivery point that needs goods. */
-final class Customer {
-    private final int id;
-    private final String name;
-    private final location location;
-    private final String address;
+final class Customer extends Place {
     private final int demand;
 
-    Customer(int id, String name, location location, String address, int demand) {
-        if (name == null || name.isBlank()) throw new IllegalArgumentException("Name required");
+    Customer(int id, String name, double x, double y, String address, int demand) {
+        super(id, name, x, y, address);
+        this.demand = checkDemand(name, demand);
+    }
+
+    Customer(int id, String name, double x, double y, int demand) {
+        super(id, name, x, y);
+        this.demand = checkDemand(name, demand);
+    }
+
+    Customer(int id, String name, Place at, String address, int demand) {
+        super(id, name, at, address);
+        this.demand = checkDemand(name, demand);
+    }
+
+    private static int checkDemand(String name, int demand) {
         if (demand <= 0) throw new IllegalArgumentException("Demand must be positive for " + name);
-        this.id = id;
-        this.name = name;
-        this.location = location;
-        this.address = address;
-        this.demand = demand;
+        return demand;
     }
 
-    int id()            { return id; }
-    String name()       { return name; }
-    location location() { return location; }
-    String address()    { return address; }
-    int demand()        { return demand; }
+    int demand() { return demand; }
 
-    double distanceTo(location other) { return location.distanceTo(other); }
-    double distanceTo(Customer other) { return location.distanceTo(other.location); }
-
-    String describe() {
-        return "Customer #" + id + " '" + name + "' at " + location + " | " + address
-                + " | Demand: " + demand;
-    }
-
-    public String toString() { return name; }
+    @Override protected String kind()  { return "Customer"; }
+    @Override protected String extra() { return " | Demand: " + demand; }
 }

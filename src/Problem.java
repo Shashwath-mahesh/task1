@@ -45,17 +45,17 @@ final class Problem {
             for (String line; (line = br.readLine()) != null; ) {
                 String[] v = line.split(",");
                 int id = Integer.parseInt(v[0].trim());
-                location loc = new location(Double.parseDouble(v[1].trim()), Double.parseDouble(v[2].trim()));
+                double x = Double.parseDouble(v[1].trim());
+                double y = Double.parseDouble(v[2].trim());
                 int demand = Integer.parseInt(v[3].trim());
-                String address = "Grid " + loc;
                 if (depot == null) {
                     if (id != 0) throw new RuntimeException("Depot missing");
                     String name = v.length > 4 && !v[4].isBlank() ? v[4].trim() : "Central Warehouse";
-                    depot = new Depot(id, name, loc, address, "06:00-22:00");
+                    depot = new Depot(id, name, x, y);
                 } else {
                     if (id != customers.size() + 1) throw new RuntimeException("Invalid customer ID");
                     String name = v.length > 4 && !v[4].isBlank() ? v[4].trim() : "Customer " + id;
-                    customers.add(new Customer(id, name, loc, address, demand));
+                    customers.add(new Customer(id, name, x, y, demand));
                 }
             }
         }

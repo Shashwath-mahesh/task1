@@ -35,7 +35,7 @@ final class ClarkeWrightConstructor {
         for (int i = 0; i < cs.size(); i++)
             for (int j = i + 1; j < cs.size(); j++) {
                 Customer a = cs.get(i), b = cs.get(j);
-                double s = p.depot.distanceTo(a.location()) + p.depot.distanceTo(b.location()) - a.distanceTo(b);
+                double s = p.depot.distanceTo(a) + p.depot.distanceTo(b) - a.distanceTo(b);
                 if (s >= 0) savings.add(new Saving(a, b, s));
             }
         savings.sort((x, y) -> Double.compare(y.value(), x.value()));

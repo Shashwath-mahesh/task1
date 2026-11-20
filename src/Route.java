@@ -16,9 +16,9 @@ final class Route {
     List<Customer> stops()   { return Collections.unmodifiableList(stops); }
 
     /** Location before position pos (depot at start). */
-    location before(int pos) { return pos == 0 ? depot.location() : stops.get(pos - 1).location(); }
+    Place before(int pos)    { return pos == 0 ? depot : stops.get(pos - 1); }
     /** Location at position pos (depot at end). */
-    location at(int pos)     { return pos == stops.size() ? depot.location() : stops.get(pos).location(); }
+    Place at(int pos)        { return pos == stops.size() ? depot : stops.get(pos); }
 
     boolean fits(Customer c) { return vehicle.canCarry(load + c.demand()); }
 
@@ -27,9 +27,9 @@ final class Route {
 
     double distance() {
         double d = 0;
-        location prev = depot.location();
-        for (Customer c : stops) { d += prev.distanceTo(c.location()); prev = c.location(); }
-        return d + prev.distanceTo(depot.location());
+        Place prev = depot;
+        for (Customer c : stops) { d += prev.distanceTo(c); prev = c; }
+        return d + prev.distanceTo(depot);
     }
 
     /** e.g. "Central Warehouse -> Customer 5 -> Customer 9 -> Central Warehouse" */
@@ -42,20 +42,20 @@ final class Route {
     /** Detailed stop-by-stop report: who is visited, in what order, and how far each leg is. */
     String report() {
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("   Start : %s %s%n", depot.name(), depot.location()));
-        location prev = depot.location();
+        sb.append(String.format("   Start : %s %s%n", depot.name(), depot.coords()));
+        Place prev = depot;
         int runningLoad = 0;
         double travelled = 0;
         int n = 1;
         for (Customer c : stops) {
-            double leg = prev.distanceTo(c.location());
+            double leg = prev.distanceTo(c);
             travelled += leg;
             runningLoad += c.demand();
             sb.append(String.format("   %2d. %-14s %-16s demand %2d | load %2d/%d | leg %6.2f | total %7.2f%n",
-                    n++, c.name(), c.location(), c.demand(), runningLoad, vehicle.capacity(), leg, travelled));
-            prev = c.location();
+                    n++, c.name(), c.coords(), c.demand(), runningLoad, vehicle.capacity(), leg, travelled));
+            prev = c;
         }
-        double back = prev.distanceTo(depot.location());
+        double back = prev.distanceTo(depot);
         travelled += back;
         sb.append(String.format("   Return: %s | leg %.2f | route total %.2f%n", depot.name(), back, travelled));
         return sb.toString();
